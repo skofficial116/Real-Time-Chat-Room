@@ -1,0 +1,87 @@
+/* ----------- GLOBAL RESET ----------- */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: "Inter", sans-serif;
+  background-color: #090040;
+  color: #ffffff;
+}
+
+/* ----------- CONTAINER ----------- */
+.home-container {
+  max-width: 1200px;
+  margin: auto;
+  padding: 2rem;
+}
+
+/* ----------- HEADER ----------- */
+.home-header {
+  text-align: center;
+  margin-bottom: 3rem;
+}
+
+.home-header h1 {
+  font-size: 2.5rem;
+  color: #FFCC00;
+}
+
+.home-header h1 span {
+  color: #B13BFF;
+}
+
+.sub-text {
+  color: #cccccc;
+  font-size: 1.1rem;
+}
+
+/* ----------- USER CARD ----------- */
+.user-card {
+  background: linear-gradient(135deg, #471396, #B13BFF33);
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: 0 0 20px #B13BFF55;
+  margin-bottom: 2rem;
+  transition: 0.3s;
+}
+
+.user-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 0 25px #B13BFFaa;
+}
+
+.user-card h2 {
+  margin-bottom: 1rem;
+  color: #FFCC00;
+}
+
+/* ----------- PLACEHOLDER SECTION ----------- */
+.placeholder-section {
+  background: #47139655;
+  padding: 1.8rem;
+  border-radius: 12px;
+  border: 1px solid #B13BFF55;
+}
+
+.placeholder-section h2 {
+  color: #FFCC00;
+  margin-bottom: 0.8rem;
+}
+
+/* ----------- RESPONSIVE DESIGN ----------- */
+@media (max-width: 768px) {
+  .home-header h1 {
+    font-size: 1.8rem;
+  }
+
+  .home-container {
+    padding: 1.5rem;
+  }
+
+  .user-card, .placeholder-section {
+    padding: 1.3rem;
+  }
+}
