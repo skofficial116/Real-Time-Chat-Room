@@ -15,12 +15,12 @@ import User from "./models/User.js";
 import Room from "./models/Rooms.js";
 import Message from "./models/Message.js";
 
-const port = 3000;
+const port = process.env.PORT || 3000;
 dotenv.config({ path: "./.env" });
 
 connectDatabase();
 
-const allowedOrigin = process.env.CLIENT_URL;
+const allowedOrigin = [process.env.CLIENT_URL,  "http://localhost:5173" ];
 
 
 const app = express();
