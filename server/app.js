@@ -20,7 +20,7 @@ dotenv.config({ path: "./.env" });
 
 connectDatabase();
 
-const allowedOrigin = [process.env.CLIENT_URL,  "http://localhost:5173" ];
+const allowedOrigin = process.env.CLIENT_URL|| "http://localhost:5173" 
 
 
 const app = express();
