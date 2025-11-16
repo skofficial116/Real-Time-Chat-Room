@@ -24,7 +24,7 @@ const app = express();
 const server = new createServer(app);
 const io = new Server(server, {
   cors: {
-    origin: process.env.CLIENT_URL,
+    origin: "*",
     methods: ["GET", "POST"],
     credentials: true,
   },
@@ -32,7 +32,9 @@ const io = new Server(server, {
 
 app.use(
   cors({
-    origin: process.env.CLIENT_URL,
+    origin: "*",
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
     credentials: true,
   })
 );
