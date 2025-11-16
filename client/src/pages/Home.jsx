@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import "./Home.css";
 import { useNavigate } from "react-router-dom";
-// import { handleError } from "../utils/utils";
 import { toast } from "react-toastify";
 import { SlPeople } from "react-icons/sl";
 
@@ -70,7 +69,6 @@ export default function HomePage() {
           </p>
         </section>
 
-        {/* Easily add more components below */}
         <section className="rooms-section">
           <h2>Available Chat Rooms</h2>
           <br />
