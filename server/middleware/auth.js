@@ -4,6 +4,7 @@ import User from "../models/User.js";
 export const isLoggedIn = (req, res, next) => {
   try {
     const token = req.cookies?.token;
+    console.log("Token: ", token)
 
     if (!token) {
       console.log("Token not found");
@@ -15,6 +16,7 @@ export const isLoggedIn = (req, res, next) => {
     if (token) {
       const decoded = jwt.verify(token, process.env.JWT_SECRET);
       req.userId = decoded.id;
+      console.log("Decoded: "+decoded)
     }
 
     next();

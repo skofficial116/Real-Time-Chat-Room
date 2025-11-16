@@ -16,7 +16,7 @@ export const login = async (req, res, next) => {
         },
       });
     }
-    console.log(req.body.user);
+    // console.log(req.body.user);
     const email = req.body?.user?.email || null;
     const password = req.body?.user?.password || null;
 
@@ -49,11 +49,15 @@ export const login = async (req, res, next) => {
 
     const token = user.getJWTToken();
 
+    console.log("Login Successful");
+
     res
       .cookie("token", token, {
         httpOnly: true,
-        secure: true,
-        sameSite: "none",
+        sameSite: "lax",
+        secure: false,
+        // secure: true,
+        // sameSite: "none",
       })
       .json({
         success: true,

@@ -10,7 +10,7 @@ const messageSchema = new mongoose.Schema({
     ref: "User",
     required: true,
   },
-  roomId: {
+  room: {
     type: mongoose.Schema.ObjectId,
     ref: "Room",
     required: true,

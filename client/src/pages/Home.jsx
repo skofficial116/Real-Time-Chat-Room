@@ -1,10 +1,13 @@
 import React, { useEffect, useState } from "react";
 import "./Home.css";
 import { useNavigate } from "react-router-dom";
+// import { handleError } from "../utils/utils";
+import { toast } from "react-toastify";
+import { SlPeople } from "react-icons/sl";
 
 export default function HomePage() {
   const [user, setUser] = useState(null);
-//   const [rooms, setRooms] = useState([]);
+  const [rooms, setRooms] = useState([]);
 
   const navigate = useNavigate();
 
@@ -27,14 +30,14 @@ export default function HomePage() {
           "Content-Type": "application/json",
         },
       });
-      const result=await response.json()
+      const result = await response.json();
 
       console.log(result);
 
-      if(result.success){
-
-      }else{
-        
+      if (result.success) {
+        setRooms(result.rooms);
+      } else {
+        toast.error("Error in loading the Chat Rooms.");
       }
     };
 
@@ -67,9 +70,33 @@ export default function HomePage() {
         </section>
 
         {/* Easily add more components below */}
-        <section className="placeholder-section">
-          <h2>More Components</h2>
-          <p>Add anything here — cards, charts, stats, lists, etc.</p>
+        <section className="rooms-section">
+          <h2>Available Chat Rooms</h2>
+          <br />
+          {rooms.length === 0 ? (
+            <p>No rooms available.</p>
+          ) : (
+            <div className="rooms-list">
+              {rooms.map((room) => (
+                <div className="room-card" key={room._id}>
+                  <h3>{room.name}</h3>
+                  <p>{room.description}</p>
+
+                  <div className="room-footer">
+                    
+                    <span>
+                         <SlPeople color="#ffcc00ff" size={18} />
+                     {"  "}
+                      {room.activeMembers} active
+                    </span>
+                    <button onClick={() => navigate(`/chat/${room._id}`)}>
+                      Join Room
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
         </section>
       </div>
     </>

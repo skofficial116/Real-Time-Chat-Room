@@ -30,6 +30,22 @@ export const createRoom = async (req, res, next) => {
   }
 };
 
+export const getRoomByID = async (req, res, next) => {
+  try {
+    const roomId=req.params.id;
+    const room = await Room.findById(roomId).select("name description activeMembers");
+console.log("Room Details: ", room)
+    return res.status(200).json({
+      success: true,
+      message: "Rooms fetched successfully",
+      rooms: room || {},
+    });
+  } catch (error) {
+    console.log(error);
+
+    return res.status(500).json({ success: false, message: error.message });
+  }
+};
 export const getAllRooms = async (req, res, next) => {
   try {
     const rooms = await Room.find() ;
@@ -45,3 +61,5 @@ export const getAllRooms = async (req, res, next) => {
     return res.status(500).json({ success: false, message: error.message });
   }
 };
+
+

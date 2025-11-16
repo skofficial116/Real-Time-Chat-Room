@@ -4,24 +4,34 @@ import Message from "../models/Message.js";
 
 export const sendMessage = async (req, res, next) => {
   try {
-    const message = req.body?.message || null;
-    const room = req.body?.room || null;
-    const user = req?.user || null;
+    const message = req.body?.newMsg || null;
+    const room = req.body?.roomId || null;
+    const user = req?.userId || null;
+    console.log(user);
+    console.log("Message: ", message)
+    console.log("Room: ", room)
 
     if (!message) {
+      console.log("Message field is empty");
       return res
         .status(400)
         .json({ success: false, message: "Message field is empty" });
     }
     if (!room) {
-      return res.status(400).json({ success: false, message: "Room field is empty" });
+      console.log("Room field is empty");
+      return res
+        .status(400)
+        .json({ success: false, message: "Room field is empty" });
     }
     if (!user) {
-      return res.status(400).json({ success: false, message: "User not found." });
+      console.log("User is empty");
+      return res
+        .status(400)
+        .json({ success: false, message: "User not found." });
     }
 
-    const newMessage = await Message.create({ message, room, user });
-
+    const newMessage = await Message.create({ msg:message, room, sender: user });
+    console.log(newMessage);
     return res.status(200).json({
       success: true,
       message: "Message sent successfully",
@@ -38,13 +48,17 @@ export const getRoomMessages = async (req, res, next) => {
     const roomId = req.params.id;
 
     if (!roomId) {
-      return res.status(400).json({ success: false, message: "RoomId is missing." });
+      return res
+        .status(400)
+        .json({ success: false, message: "RoomId is missing." });
     }
 
     const room = Room.findById(roomId);
 
     if (!room) {
-      return res.status(400).json({ success: false, message: "RoomId is invalid" });
+      return res
+        .status(400)
+        .json({ success: false, message: "RoomId is invalid" });
     }
 
     const messages = await Message.find({ room: roomId }).limit(10);
@@ -60,4 +74,3 @@ export const getRoomMessages = async (req, res, next) => {
     return res.status(500).json({ success: false, message: error.message });
   }
 };
-
