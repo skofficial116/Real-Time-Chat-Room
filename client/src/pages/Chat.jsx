@@ -3,6 +3,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { io } from "socket.io-client";
 import "./ChatRoom.css";
 import { toast } from "react-toastify";
+import Loader from "../components/Loader";
 
 const formatDateHeader = (date) => {
   const today = new Date();
@@ -36,6 +37,8 @@ const groupMessagesByDate = (messages) => {
 
 export default function ChatRoom() {
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(true);
+
   const { id: roomId } = useParams();
 
   const [socketID, setSocketID] = useState("");
@@ -50,9 +53,6 @@ export default function ChatRoom() {
   const currentUserEmail = JSON.parse(localStorage.getItem("user")).email;
   // console.log(currentUserEmail);
 
-  // -------------------------------------
-  // Create socket ONCE (never recreated)
-  // -------------------------------------
   const socket = useMemo(
     () =>
       io("http://localhost:3000", {
@@ -69,9 +69,7 @@ export default function ChatRoom() {
     });
   };
 
-  // -------------------------------------
-  // Setup room + listeners
-  // -------------------------------------
+ 
   useEffect(() => {
     socket.on("connect", () => {
       setSocketID(socket.id);
@@ -80,11 +78,9 @@ export default function ChatRoom() {
       socket.emit("join-room", roomId);
     });
 
-    // Receive full message list from backend
     socket.on("messages", (data) => {
       // console.log("Received Messages:", data);
 
-      // ❗ THIS FIXES YOUR MAIN BUG
       setMessages(data);
     });
 
@@ -96,7 +92,6 @@ export default function ChatRoom() {
     };
   }, [roomId, socket]);
 
-  // Auto-scroll when messages update
   useEffect(() => {
     scrollToBottom();
   }, [messages]);
@@ -117,6 +112,7 @@ export default function ChatRoom() {
 
       if (result.success) {
         setRoomDetails(result.room);
+         setLoading(false);
       } else {
         toast.error("Error in loading the Chat Rooms.");
       }
@@ -125,10 +121,7 @@ export default function ChatRoom() {
     fetchRoomById(roomId);
   }, [roomId]);
 
-  // -------------------------------------
-  // Send message via REST
-  // (backend will emit updated list)
-  // -------------------------------------
+  // REST based Handle Submit
   // const handleSubmit = async () => {
   //   if (!newMsg.trim()) return;
 
@@ -166,21 +159,19 @@ export default function ChatRoom() {
 
   const groupedMessages = groupMessagesByDate(messages);
 
-  return (
+  return loading? <Loader></Loader>: (
     <div className="chat-container">
-      {/* HEADER */}
       <div className="chat-header">
         <button className="back-btn" onClick={() => navigate("/home")}>
           ⬅ Back
         </button>
 
-        <div>
+        <div className="roomDetails" >
           <h2 className="room-title">{roomDetails.name}</h2>
           <p className="room-desc">{roomDetails.description}</p>
         </div>
       </div>
 
-      {/* MESSAGES */}
       <div className="messages-box">
         {messages.length === 0 ? (
           <div className="empty-messages">
@@ -222,7 +213,6 @@ export default function ChatRoom() {
         <div ref={messagesEndRef} />
       </div>
 
-      {/* INPUT */}
       <div className="chat-input">
         <input
           type="text"
