@@ -20,17 +20,18 @@ dotenv.config({ path: "./.env" });
 
 connectDatabase();
 
+const allowedOrigin = process.env.CLIENT_URL;
+
+
 const app = express();
 const server = new createServer(app);
 const io = new Server(server, {
   cors: {
-    origin: "*",
+    origin:allowedOrigin,
     methods: ["GET", "POST"],
     credentials: true,
   },
 });
-
-const allowedOrigin = process.env.CLIENT_URL;
 
 app.use(
   cors({
