@@ -37,8 +37,8 @@ export const getRoomByID = async (req, res, next) => {
 console.log("Room Details: ", room)
     return res.status(200).json({
       success: true,
-      message: "Rooms fetched successfully",
-      rooms: room || {},
+      message: "Room Details Fetched successfully",
+      room: room || {},
     });
   } catch (error) {
     console.log(error);

@@ -77,7 +77,7 @@ export const login = async (req, res, next) => {
 
 export const register = async (req, res) => {
   try {
-    console.log(req.body);
+    // console.log(req.body);
     const email = req.body?.user?.email || null;
     const password = req.body?.user?.password || null;
     const name = req.body?.user?.name || null;
@@ -98,8 +98,10 @@ export const register = async (req, res) => {
         .json({ success: false, message: "Name field is empty" });
     }
 
-    const user = await User.find({ email });
-    if (user) {
+    let user = await User.find({ email });
+    console.log(user)
+    console.log(user.length===0)
+    if (user.length!=0) {
       return res
         .status(400)
         .json({ success: false, message: "Email already exist" });

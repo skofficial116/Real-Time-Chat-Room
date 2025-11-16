@@ -43,13 +43,12 @@ export default function ChatRoom() {
     name: "UnKnown",
     description: "UnKnown",
     activeMembers: null,
-
   });
   const [messages, setMessages] = useState([]);
   const [newMsg, setNewMsg] = useState("");
 
   const currentUserEmail = JSON.parse(localStorage.getItem("user")).email;
-  console.log(currentUserEmail);
+  // console.log(currentUserEmail);
 
   // -------------------------------------
   // Create socket ONCE (never recreated)
@@ -76,14 +75,14 @@ export default function ChatRoom() {
   useEffect(() => {
     socket.on("connect", () => {
       setSocketID(socket.id);
-      console.log("Connected:", socket.id);
+      // console.log("Connected:", socket.id);
 
       socket.emit("join-room", roomId);
     });
 
     // Receive full message list from backend
     socket.on("messages", (data) => {
-      console.log("Received Messages:", data);
+      // console.log("Received Messages:", data);
 
       // ❗ THIS FIXES YOUR MAIN BUG
       setMessages(data);
@@ -107,16 +106,17 @@ export default function ChatRoom() {
       let url = `${import.meta.env.VITE_API_URL}/room/getRoomByID/${roomId}`;
       const response = await fetch(url, {
         method: "GET",
+        credentials: "include",
         headers: {
           "Content-Type": "application/json",
         },
       });
       const result = await response.json();
 
-      console.log(result);
+      // console.log(result);
 
       if (result.success) {
-        setRoomDetails(result);
+        setRoomDetails(result.room);
       } else {
         toast.error("Error in loading the Chat Rooms.");
       }
@@ -175,8 +175,8 @@ export default function ChatRoom() {
         </button>
 
         <div>
-          <h2 className="room-title">Chat Room</h2>
-          <p className="room-desc">Real-time discussion</p>
+          <h2 className="room-title">{roomDetails.name}</h2>
+          <p className="room-desc">{roomDetails.description}</p>
         </div>
       </div>
 
@@ -187,12 +187,13 @@ export default function ChatRoom() {
             <p>No messages yet. Start the conversation!</p>
           </div>
         ) : (
-          Object.keys(groupedMessages).map((dateLabel) => (
-            <div key={dateLabel}>
+          Object.keys(groupedMessages).map((dateLabel,i) => (
+            <div key={i}>
               <div className="date-header">{dateLabel}</div>
 
               {groupedMessages[dateLabel].map((msg) => {
-                const mine = msg.sender.email === currentUserEmail;
+                // console.log(msg)
+                const mine = msg.sender?.email === currentUserEmail;
 
                 return (
                   <div
@@ -200,7 +201,7 @@ export default function ChatRoom() {
                     className={`message fade-in ${mine ? "mine" : "theirs"}`}
                   >
                     <div className="sender-name">
-                      {mine ? "You" : msg.sender.name}
+                      {mine ? "You" : msg.sender?.name}
                     </div>
 
                     <div className="bubble">{msg.msg}</div>

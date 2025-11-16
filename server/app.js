@@ -136,10 +136,11 @@ io.on("connection", (socket) => {
         sender: socket.user._id,
       });
 
-      const populated = (await newMessage.populate("sender", "name email")).populate("room");
-console.log(populated)
-      // Emit to everyone in the room
-      io.to(roomId).emit("messages", [populated]);
+      const populated = await Message.find({ room: roomId }).populate([
+        "sender",
+        "room",
+      ]);
+      io.to(roomId).emit("messages", populated);
     } catch (err) {
       console.log("Message error:", err);
     }
