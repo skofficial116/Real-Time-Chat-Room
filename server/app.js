@@ -24,14 +24,12 @@ const app = express();
 const server = new createServer(app);
 const io = new Server(server, {
   cors: {
-    // origin: "*",
     origin: "http://localhost:5173",
     methods: ["GET", "POST"],
     credentials: true,
   },
 });
 
-// app.use(cors())
 app.use(
   cors({
     origin: "http://localhost:5173",
@@ -52,19 +50,15 @@ app.use("/room", roomRouter);
 
 io.use(async (socket, next) => {
   try {
-    // Parse cookies manually because socket.request does NOT run cookieParser
     const cookies = cookie.parse(socket.request.headers.cookie || "");
-
     const token = cookies.token;
     if (!token) return next(new Error("Not authenticated"));
 
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-
     const user = await User.findById(decoded.id);
     if (!user) return next(new Error("User not found"));
 
-    socket.user = user; // Attach user for later use
-
+    socket.user = user;
     next();
   } catch (err) {
     console.log("Auth error:", err.message);
@@ -75,7 +69,6 @@ io.use(async (socket, next) => {
 io.on("connection", (socket) => {
   console.log(`User connected: ${socket.id} (${socket.user.email})`);
 
-  // ========== JOIN ROOM ==========
   socket.on("join-room", async (roomId) => {
     try {
       const room = await Room.findById(roomId);
@@ -84,26 +77,22 @@ io.on("connection", (socket) => {
       socket.join(roomId);
       socket.currentRoom = roomId;
 
-      // Increase active members
       room.activeMembers += 1;
       await room.save();
 
       console.log(`${socket.user.email} joined room ${roomId}`);
 
-      // Fetch existing messages
       const messages = await Message.find({ room: roomId }).populate(
         "sender",
         "name email"
       );
 
-      // Send messages ONLY to this user
       socket.emit("messages", messages);
     } catch (err) {
       console.log("Join room error:", err);
     }
   });
 
-  // ========== LEAVE ROOM ==========
   socket.on("leave-room", async () => {
     try {
       const roomId = socket.currentRoom;
@@ -125,7 +114,6 @@ io.on("connection", (socket) => {
     }
   });
 
-  // ========== SEND MESSAGE ==========
   socket.on("send-message", async ({ msg, roomId }) => {
     try {
       if (!msg?.trim()) return;
@@ -146,7 +134,6 @@ io.on("connection", (socket) => {
     }
   });
 
-  // ========== DISCONNECT ==========
   socket.on("disconnect", async () => {
     try {
       const roomId = socket.currentRoom;

@@ -1,4 +1,3 @@
-// import User from "../models/User";
 import Room from "../models/Rooms.js";
 
 export const createRoom = async (req, res, next) => {
@@ -32,9 +31,11 @@ export const createRoom = async (req, res, next) => {
 
 export const getRoomByID = async (req, res, next) => {
   try {
-    const roomId=req.params.id;
-    const room = await Room.findById(roomId).select("name description activeMembers");
-console.log("Room Details: ", room)
+    const roomId = req.params.id;
+    const room = await Room.findById(roomId).select(
+      "name description activeMembers"
+    );
+    console.log("Room Details: ", room);
     return res.status(200).json({
       success: true,
       message: "Room Details Fetched successfully",
@@ -48,7 +49,7 @@ console.log("Room Details: ", room)
 };
 export const getAllRooms = async (req, res, next) => {
   try {
-    const rooms = await Room.find() ;
+    const rooms = await Room.find();
 
     return res.status(200).json({
       success: true,
@@ -61,5 +62,3 @@ export const getAllRooms = async (req, res, next) => {
     return res.status(500).json({ success: false, message: error.message });
   }
 };
-
-
